@@ -10,10 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 public class Main extends Application {
@@ -88,13 +85,26 @@ public class Main extends Application {
         }
     }
 
-
+    // Creates a new table in the db
+    public static void createTable(){
+        String createT = "CREATE TABLE IF NOT EXISTS HighScores(dmgDealt int)";
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement statement = conn.createStatement()) {
+            statement.execute(createT);
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+    }
+    
     // insert method that currently does not work
     public void insert(int score){
         try{
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement statement = conn.prepareStatement(insertSQL);
-            statement.setInt(1, score);
+
+            // tasting for parameter index, unsure what it is.
+            statement.setInt('a', score);
+
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
@@ -105,6 +115,8 @@ public class Main extends Application {
             insert(newScore);
         }
     }
+
+
 }
 
 
